@@ -1,0 +1,20 @@
+- hosts: all
+  vars:
+    zsh_antigen_bundles_extras:
+      - nvm
+      - joel-porquet/zsh-dircolors-solarized
+      - git
+      - pip
+      - pyenv
+      - command-not-found
+      - zsh-users/zsh-syntax-highlighting
+      - zsh-users/zsh-completions
+      - zsh-users/zsh-history-substring-search
+      - yonchu/zsh-python-prompt zsh-python-prompt
+      - RobSis/zsh-completion-generator
+    zsh_autosuggestions_bind_key: "^U"
+  roles:
+      # Mac
+      - { role: ansible-sultan.zsh, zsh_user: saltman }
+      # Ubuntu
+      # - {role: ansible-sultan.zsh, zsh_user: sultan}
