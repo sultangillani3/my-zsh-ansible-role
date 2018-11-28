@@ -38,6 +38,12 @@
   become: true
   tags: configure
 
+- name: Configure Vim
+  shell: "git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && sh ~/.vim_runtime/install_awesome_vimrc.sh"
+  become_user: "{{ zsh_user }}"
+  args:
+      creates: ~/.vim_runtime
+
 - name: Set zsh_antigen_installed_version variable
   set_fact:
     zsh_antigen_installed_version: "{{ zsh_register_antigen_version.stdout }}"
@@ -55,7 +61,6 @@
     name: "{{ zsh_user }}"
     shell: /bin/zsh
   become: true
-  when: not zsh_shared
 
 - name: Add skip_global_compinit for disable early compinit call in Ubuntu
   lineinfile:
@@ -64,3 +69,4 @@
     dest: /etc/zsh/zshenv
     state: present
   when: ansible_distribution == 'Ubuntu'
+  become: true 

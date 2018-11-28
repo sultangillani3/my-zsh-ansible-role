@@ -15,6 +15,6 @@
     zsh_autosuggestions_bind_key: "^U"
   roles:
       # Mac
-      - { role: ansible-sultan.zsh, zsh_user: saltman }
+      # - { role: ansible-sultan.zsh, zsh_user: saltman }
       # Ubuntu
-      # - {role: ansible-sultan.zsh, zsh_user: sultan}
+        - {role: ansible-sultan.zsh, zsh_user: sultan}
