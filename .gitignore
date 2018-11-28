@@ -1,2 +1,4 @@
 .molecule
 00aptproxy
+.DS_Store
+playbook.retry
