@@ -7,7 +7,13 @@
       'git',
       'wget',
       'bat',
-      'exa'
+      'exa',
+      'nvm',
+      'docker',
+      'ctop',
+      'htop',
+      'tldr',
+      'fzf'
     ]
     state: present
   # brew don't work from root user on macOS
@@ -47,6 +53,7 @@
   shell: "~/nerd-fonts/install.sh"
   become: yes
   become_user: "{{ zsh_user }}"
+  when: ansible_os_family == 'Debian'
 
 - name: Install Brew Casks
   homebrew_cask:
@@ -102,8 +109,8 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/fzf
-  when: zsh_register_fzf_command.rc == 1
-
+  when: zsh_register_fzf_command.rc == 1 and ansible_os_family == 'Debian'
+  
 - name: Set directory permissions
   file:
     name: "{{ zsh_antigen_path }}"

@@ -15,4 +15,4 @@
     zsh_autosuggestions_bind_key: "^U"
   roles:
       # role
-      - { role: ansible-sultan.zsh }
+      - { role: ansible-sultan }
