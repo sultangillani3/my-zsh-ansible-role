@@ -1,15 +1,32 @@
 ---
 
-- name: Install zsh, git, wget
+- name: Install brew packages
   homebrew:
+    name: [
+      'zsh',
+      'git',
+      'wget',
+      'bat',
+      'exa'
+    ]
     state: present
-  with_items:
+  # brew don't work from root user on macOS
+  become_user: "{{ zsh_user }}"
+  when: ansible_os_family == 'Darwin'
+
+- name: Install Debian apt modules
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - fonts-powerline
     - zsh
     - git
     - wget
-    - bat
-    - exa
-  when: ansible_os_family == 'Darwin'
+    - curl
+  become: yes
+  ignore_errors: yes
+  when: ansible_os_family == 'Debian'
 
 - name: tap nerd font
   homebrew_tap: 
@@ -17,11 +34,41 @@
     state: present
   when: ansible_os_family == 'Darwin'
 
+- name: nerd font for debian
+  git:
+    repo: https://github.com/ryanoasis/nerd-fonts.git
+    dest: ~/nerd-fonts
+    force: yes
+    depth: 1
+  become_user: "{{ zsh_user }}"
+  when: ansible_os_family == 'Debian'
+
+- name: Install fonts for debian
+  shell: "~/nerd-fonts/install.sh"
+  become: yes
+  become_user: "{{ zsh_user }}"
+
 - name: Install Brew Casks
   homebrew_cask:
     name: font-hack-nerd-font
     state: present
   when: ansible_os_family == 'Darwin'
+
+- name: create pyenv
+  shell: "curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash"
+  args:
+    creates: ~/.pyenv
+  become: yes
+  become_user: "{{ zsh_user }}"
+
+- name: Clone pyenv and pyenv virtualenvwrapper
+  git:
+    repo: https://github.com/pyenv/pyenv-virtualenvwrapper.git
+    dest: "~/.pyenv/plugins/pyenv-virtualenvwrapper"
+    force: yes
+  become: yes
+  become_user: "{{ zsh_user }}"
+
 
 - name: Clone antigen {{ zsh_antigen_version }}
   git:
@@ -55,7 +102,6 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/fzf
-  become: yes
   when: zsh_register_fzf_command.rc == 1
 
 - name: Set directory permissions
@@ -64,5 +110,4 @@
     owner: "{{ zsh_user }}"
     group: "{{ zsh_user_group }}"
     recurse: yes
-  become: yes
   changed_when: false
