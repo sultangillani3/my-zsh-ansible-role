@@ -27,8 +27,6 @@
     - zsh
     - git
     - wget
-    - bat
-    - exa
     - curl
   become: yes
   ignore_errors: yes
